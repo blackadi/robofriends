@@ -1,46 +1,63 @@
-import { useEffect, useState } from "react";
+import { Component, useEffect, useState } from "react";
+import { connect } from "react-redux";
 import CardList from "../Components/CardList";
 import SearchBox from "../Components/SearchBox";
 import Scroll from "../Components/Scroll";
-import ErrorBoundary from '../Components/ErrorBoundary';
+import ErrorBoundary from "../Components/ErrorBoundary";
 import "./App.css";
 
-const App = () => {
+import { setSearchField } from "../actions";
 
-  const [robots, setRobots] = useState([]);
-  const [searchField, setSearchField] = useState('');
-  const [count, setCount] = useState(0);
+class App extends Component {
+  constructor() {
+    super();
 
-  useEffect( () =>{
+    this.state = {
+      robots: [],
+    };
+  }
+
+  componentDidMount() {
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((response) => response.json())
-      .then((users) => setRobots( users ));
-      console.log(count);
-  }, [count]);
+      .then((users) => {
+        this.setState({ robots: users });
+      });
+  }
 
-  const onSearchChange = (event) => {
-    setSearchField(event.target.value);
-  };
+  render() {
+    const { robots } = this.state;
+    const { searchField, onSearchChange } = this.props;
+    const filteredRobots = robots.filter((robot) => {
+      return robot.name.toLowerCase().includes(searchField.toLocaleLowerCase());
+    });
 
-  const filteredRobots = robots.filter((robot) => {
-    return robot.name.toLowerCase().includes(searchField.toLocaleLowerCase());
-  });
-
-  return !robots.length ? (
-    <h1>Loading</h1>
-  ) : (
-    <div className="tc">
-      <h1 className="f1">RoboFriends</h1>
-      <button onClick={() => setCount(count+1)}>Click Me!</button>
-      <SearchBox searchChange={onSearchChange} />
-      <Scroll>
-        <ErrorBoundary>
-           <CardList robots={filteredRobots} />
-        </ErrorBoundary>
-      </Scroll>
-    </div>
-  );
-  
+    return !robots.length ? (
+      <h1>Loading</h1>
+    ) : (
+      <div className="tc">
+        <h1 className="f1">RoboFriends</h1>
+        <SearchBox searchChange={onSearchChange} />
+        <Scroll>
+          <ErrorBoundary>
+            <CardList robots={filteredRobots} />
+          </ErrorBoundary>
+        </Scroll>
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    searchField: state.searchField,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSearchChange: (event) => dispatch(setSearchField(event.target.value)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
