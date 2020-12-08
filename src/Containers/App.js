@@ -1,43 +1,31 @@
-import { Component, useEffect, useState } from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import CardList from "../Components/CardList";
 import SearchBox from "../Components/SearchBox";
 import Scroll from "../Components/Scroll";
 import ErrorBoundary from "../Components/ErrorBoundary";
-import "./App.css";
+import "../css/App.css";
 
-import { setSearchField } from "../actions";
+import { setSearchField, requestRobots } from "../actions/actions";
 
 class App extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      robots: [],
-    };
-  }
 
   componentDidMount() {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.json())
-      .then((users) => {
-        this.setState({ robots: users });
-      });
+    this.props.requestRobots();
   }
 
   render() {
-    const { robots } = this.state;
-    const { searchField, onSearchChange } = this.props;
+    const { searchField, setSearchField, robots, isPending, error } = this.props;
     const filteredRobots = robots.filter((robot) => {
       return robot.name.toLowerCase().includes(searchField.toLocaleLowerCase());
     });
 
-    return !robots.length ? (
+    return isPending ? (
       <h1>Loading</h1>
     ) : (
       <div className="tc">
         <h1 className="f1">RoboFriends</h1>
-        <SearchBox searchChange={onSearchChange} />
+        <SearchBox searchChange={(event) => setSearchField(event.target.value)} />
         <Scroll>
           <ErrorBoundary>
             <CardList robots={filteredRobots} />
@@ -50,14 +38,11 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    searchField: state.searchField,
+    searchField: state.searchRobots.searchField,
+    robots: state.requestReducers.robots,
+    isPending: state.requestReducers.isPending,
+    error: state.requestReducers.error
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onSearchChange: (event) => dispatch(setSearchField(event.target.value)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, {requestRobots, setSearchField})(App);
