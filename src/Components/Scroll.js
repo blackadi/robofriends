@@ -1,10 +1,11 @@
 const Scroll = (props) => {
   return (
-    <div
-      style={{ overflow: "scroll", border: "5px solid black", height: "500px" }}
+    
+    <h3 className="ui divider"
+      style={{ overflow: "scroll", height: "500px" }}
     >
       {props.children}
-    </div>
+    </h3>
   );
 };
 
