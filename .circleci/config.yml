@@ -20,9 +20,9 @@ jobs:
       - checkout # check out the code in the project directory
       - run: echo "hello world 2" # run the `echo` command
 
-  workflows:
-    version: 2
-    addi1_addi2:
-      jobs:
-        - addi1
-        - addi2
+workflows:
+  version: 2
+  addi1_addi2:
+    jobs:
+      - addi1
+      - addi2
