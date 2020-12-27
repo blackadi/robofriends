@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { connect } from "react-redux";
-import CardList from "../Components/CardList";
+import CardList from "../Components/Card/CardList";
 import SearchBox from "../Components/SearchBox";
 import Scroll from "../Components/Scroll";
 import ErrorBoundary from "../Components/ErrorBoundary";
@@ -12,6 +12,7 @@ class App extends Component {
 
   componentDidMount() {
     this.props.requestRobots();
+    console.log(process.env.REACT_APP_SAY_HI);
   }
 
   loading() {

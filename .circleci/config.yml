@@ -1,0 +1,28 @@
+version: 2.1
+jobs:
+  addi1:
+    docker:
+      - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD # context / project UI env-var reference
+    steps:
+      - checkout # check out the code in the project directory
+      - run: echo "hello world 1" # run the `echo` command
+
+  addi2:
+    docker:
+      - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD # context / project UI env-var reference
+    steps:
+      - checkout # check out the code in the project directory
+      - run: echo "hello world 2" # run the `echo` command
+
+  workflows:
+    version: 2
+    addi1_addi2:
+      jobs:
+        - addi1
+        - addi2

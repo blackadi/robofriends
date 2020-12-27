@@ -1,0 +1,13 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-AXIOS-1038255:
+    - axios:
+        reason: None given
+        expires: '2021-01-15T09:31:11.514Z'
+  SNYK-JS-NODENOTIFIER-1035794:
+    - react-scripts > jest > @jest/core > @jest/reporters > node-notifier:
+        reason: None given
+        expires: '2021-01-15T09:31:11.515Z'
+patch: {}
